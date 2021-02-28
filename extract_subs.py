@@ -75,9 +75,18 @@ for i in lst:
     y = ws(i,segment_delimiter_set = {",", "。", ":", "?", "!", ";", "\n"}, )
     segmented_texts.append(y)
 
-print(segmented_texts[0]) #testing
+#print(segmented_texts[0]) #testing
 
+di={}
+list_dicts=[]
 
+for i in segmented_texts:
+    for a in i:
+        for s in a:
+            di[s]= di.get(s,0)+1
+            list_dicts.append(di)
+
+print(list_dicts[0])
 #print(word_sentence_list)
 
 '''word_sentence_list = ws(
