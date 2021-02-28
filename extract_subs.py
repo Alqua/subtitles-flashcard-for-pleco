@@ -55,14 +55,32 @@ for i in texts_list:
     sentence_list.append(x)
 
 
-print(sentence_list[0])
+#print(sentence_list[0])
 
 # using ckiptagger with CPU to cut the words and prepare entities
 ws = WS("./data")
 pos = POS("./data")
 ner = NER("./data")
 
-word_sentence_list = ws(
+# create a list of a list of texts since ws accept list element and we want to keep the texts separate this time
+lst = []
+for i in sentence_list:
+    lst.append([i])
+
+#create empy list to store the lists of the segmented texts
+segmented_texts = []
+
+#segment
+for i in lst:
+    y = ws(i,segment_delimiter_set = {",", "。", ":", "?", "!", ";", "\n"}, )
+    segmented_texts.append(y)
+
+print(segmented_texts[0]) #testing
+
+
+#print(word_sentence_list)
+
+'''word_sentence_list = ws(
     sentence_list,
     # sentence_segmentation = True, # To consider delimiters
     segment_delimiter_set = {",", "。", ":", "?", "!", ";", "\n"}, # This is the default set of delimiters
@@ -80,6 +98,10 @@ def print_word_pos_sentence(word_sentence, pos_sentence):
         print(f"{word}({pos})", end="\u3000")
     print()
     return
+
+print(entity_sentence_list)
+
+print(word_sentence_list)'''
 
 #print(entity_sentence_list)
 #--end ckip part
