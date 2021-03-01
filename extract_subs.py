@@ -55,7 +55,8 @@ for i in texts_list:
     sentence_list.append(x)
 
 
-#print(sentence_list[0])
+
+#print(lst[0], '/n /n /n /n NEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXT', lst[1])
 
 # using ckiptagger with CPU to cut the words and prepare entities
 ws = WS("./data")
@@ -76,41 +77,33 @@ for i in lst:
     segmented_texts.append(y)
 
 #print(segmented_texts[0]) #testing
+print(segmented_texts[0], '/n /n /n /n NEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXT', segmented_texts[1])
 
-di={}
 list_dicts=[]
 
 for i in segmented_texts:
-    for a in i:
-        for s in a:
-            di[s]= di.get(s,0)+1
-            list_dicts.append(di)
+    for a in i[0] :
+        #for s in a:
+        di={}
 
-print(list_dicts[0])
-#print(word_sentence_list)
+        di[a]= di.get(a,0)+1
+        list_dicts.append(di)
 
-'''word_sentence_list = ws(
-    sentence_list,
-    # sentence_segmentation = True, # To consider delimiters
-    segment_delimiter_set = {",", "。", ":", "?", "!", ";", "\n"}, # This is the default set of delimiters
-    # recommend_dictionary = dictionary1, # words in this dictionary are encouraged
-    # coerce_dictionary = dictionary2, # words in this dictionary are forced
-)
+#print(a_minus_b(list_dicts[1], list_dicts[0]))
+#print(list_dicts[0], '/n /n /n /n NEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXT', list_dicts[1])
 
-pos_sentence_list = pos(word_sentence_list)
+#outfile = open("1dict-full.txt", "w")
+#outfile.write( "\n".join(str(i) for i in list_dicts[0]))
+#outfile.close()
 
-entity_sentence_list = ner(word_sentence_list, pos_sentence_list)
+#outfile = open("2dict-full.txt", "w")
+#outfile.write( "\n".join(str(i) for i in list_dicts[1]))
+#outfile.close()
 
-def print_word_pos_sentence(word_sentence, pos_sentence):
-    assert len(word_sentence) == len(pos_sentence)
-    for word, pos in zip(word_sentence, pos_sentence):
-        print(f"{word}({pos})", end="\u3000")
-    print()
-    return
+#outfile = open("3dict-full.txt", "w")
+#outfile.write( "\n".join(str(i) for i in list_dicts[2]))
+#outfile.close(
 
-print(entity_sentence_list)
 
-print(word_sentence_list)'''
 
-#print(entity_sentence_list)
 #--end ckip part
