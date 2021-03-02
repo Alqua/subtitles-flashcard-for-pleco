@@ -47,17 +47,14 @@ for filename in sorted(os.listdir(le_chemin_sub)):  # for all file names in fold
         texts_list.append(data)  # add it to the list
 
 
+#cleaning part
 sentence_list=[] # create an empty list to save all the cleaned subtitles inside
-
 #cleaning
 for i in texts_list:
     x=filter(i)
     sentence_list.append(x)
 
-
-
-#print(lst[0], '/n /n /n /n NEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXT', lst[1])
-
+#--beginning ckip part
 # using ckiptagger with CPU to cut the words and prepare entities
 ws = WS("./data")
 pos = POS("./data")
@@ -80,47 +77,63 @@ for i in lst:
 
 
 
-list_dicts_prep=[]
 
-for i[0] in segmented_texts:
-    for a in i[0] :
-        di={}
-        for s in a:
-            #print(s)
-            di[s]= di.get(s,0)+1
-        list_dicts_prep.append(di)
-
-
-
+#removing duplicates
 dict_in_list = []
+for i[0] in segmented_texts:
+    for a in i[0]:
+        a = list(dict.fromkeys(a))
+    dict_in_list.append(a)
 
-for a in list_dicts_prep:
-    lt1 = list(a.keys())
-    dict_in_list.append(lt1)
 
-#print('dictionnaires dans des listes', dict_in_list[2], dict_in_list[3])
+#importing hsk words to remove
+fh = open("hsk1-TO-4-trad.txt")
+hsk=[]
+for line in fh:
+    line = line.rstrip()
+    hsk.append(line)
 
-list_of_list = []
-removing = []
+#importing non-hsk words to remove
+fz = open("non-hsk_toremove_trad.txt")
+non_hsk=[]
+for line in fz:
+    line = line.rstrip()
+    non_hsk.append(line)
+
+#organizing the lists of vocabulary
+list_of_list = [] #the container of the vocabulary list
+removing = [] #the vocabulary from the previous episodes removed from the list (getting bigger after each iteration)
 
 for l in dict_in_list:
     list_voc = []
     for word in l:
-        if removing is None:
+        word = word.rstrip()
+        if removing is None and word not in hsk and word not in non_hsk:
             removing.append(word)
             list_voc.append(word)
-        elif word not in removing:
+            #print(word)
+        elif word not in removing and word not in hsk and word not in non_hsk:
             removing.append(word)
             list_voc.append(word)
+            #print(word)
     list_of_list.append(list_voc)
-
-print('/n', 'List de voc (normalement moins en moins de voc par liste)', list_of_list[7])
 
 #create folder for results
 if not os.path.exists('results'):
     os.makedirs('results')
 
+#saving the files
 for count, item in enumerate(list_of_list, 1):
     # every file will get the the index as name
     with open(f'results/{count}.txt', 'w') as f:
         f.write("\n".join(str(i) for i in item))
+
+#WARNING for order of episode in subtitles folder (again)
+print('Please, check that the order of the episodes is correct, if not, rename them with the correct number in front') 
+for filename in sorted(os.listdir(le_chemin_sub)):  # for all file names in folder subtitles in order
+    #ignore hidden files
+    if filename[0] != '.':
+
+        file_path = os.path.join(le_chemin_sub, filename)  # Create path with folder path and file names
+
+        print(file_path) #to check if the order is correct
