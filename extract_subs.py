@@ -76,18 +76,7 @@ for i in lst:
     y = ws(i,segment_delimiter_set = {",", "。", ":", "?", "!", ";", "\n"}, )
     segmented_texts.append(y)
 
-#print(segmented_texts[0]) #testing
-#print(segmented_texts[0], '/n /n /n /n NEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXT', segmented_texts[1])
-
-
-'''outfile = open("segmented_texts.txt", "w")
-outfile.write(str(segmented_texts[0]) + '\n'+str(segmented_texts[1]))
-outfile.close()
-
-outfile = open("segmented_texts.txt", "w")
-for row in segmented_texts:
-        outfile.write(str(row) + '\n')
-outfile.close()'''
+#--end ckip part
 
 
 
@@ -102,30 +91,36 @@ for i[0] in segmented_texts:
         list_dicts_prep.append(di)
 
 
-list_dicts = []
+
+dict_in_list = []
+
 for a in list_dicts_prep:
-    a = dict.fromkeys(a, 1)
-    list_dicts.append(a)
+    lt1 = list(a.keys())
+    dict_in_list.append(lt1)
 
-t = a_minus_b(list_dicts[1], list_dicts[0])
+#print('dictionnaires dans des listes', dict_in_list[2], dict_in_list[3])
 
-print(t)
+list_of_list = []
+removing = []
 
-#--end ckip part
+for l in dict_in_list:
+    list_voc = []
+    for word in l:
+        if removing is None:
+            removing.append(word)
+            list_voc.append(word)
+        elif word not in removing:
+            removing.append(word)
+            list_voc.append(word)
+    list_of_list.append(list_voc)
 
-'''outfile = open("1dict-full.txt", "w")
-outfile.write( "\n".join(str(i) for i in list_dicts[0]))
-outfile.close()
+print('/n', 'List de voc (normalement moins en moins de voc par liste)', list_of_list[7])
 
+#create folder for results
+if not os.path.exists('results'):
+    os.makedirs('results')
 
-outfile = open("2dict-full.txt", "w")
-outfile.write( "\n".join(str(i) for i in list_dicts[1]))
-outfile.close()
-
-outfile = open("3dict-full.txt", "w")
-outfile.write( "\n".join(str(i) for i in list_dicts[2]))
-outfile.close()
-
-outfile = open("2minus1-dict.txt", "w")
-outfile.write( "\n".join(str(i) for i in t))
-outfile.close()'''
+for count, item in enumerate(list_of_list, 1):
+    # every file will get the the index as name
+    with open(f'results/{count}.txt', 'w') as f:
+        f.write("\n".join(str(i) for i in item))

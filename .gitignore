@@ -1,4 +1,7 @@
 data/
+results/
+mini_results/
+results1/
 1dict-full.txt
 2dict-full.txt
 3dict-full.txt
