@@ -1,4 +1,4 @@
-fh = open("1dict-full.txt")
+fh = open("Z1dict-full.txt")
 
 list_dicts = []
 
@@ -18,7 +18,7 @@ for a in hsk:
 list_dicts.append(di)
 
 
-fy = open("2dict-full.txt")
+fy = open("Z2dict-full.txt")
 hsk=[]
 
 for line in fy:
@@ -35,7 +35,7 @@ for a in hsk:
 list_dicts.append(di)
 
 
-fz = open("3dict-full.txt")
+fz = open("Z3dict-full.txt")
 hsk=[]
 
 for line in fz:
@@ -64,18 +64,31 @@ t3 = list_dicts[2]
 
 list_dicts_worked = []
 
-print(list_dicts, 'SPACE SPACE')
+#print(list_dicts, 'SPACE SPACE')
 list_dicts_worked.append(t1)
 
 def a_minus_b(a,b):
     a = {k:v for k,v in a.items() if k not in b or v != b[k]}
     return a
 
-dico2 = a_minus_b(list_dicts[1],list_dicts[0])
+'''for k.value in t1.items():
+    t1[k] = 5'''
+
+t1 = dict.fromkeys(t1, 1)
+t2 = dict.fromkeys(t2, 1)
+
+p = a_minus_b(t1,t2)
+print('THIS IS THE SECOND', t2)
+
+print('THERE SHOULD HAVE NO ELEMENT OF FIRST PRINT HERE', p)
+
+
+
+'''dico2 = a_minus_b(list_dicts[1],list_dicts[0])
 list_dicts_worked.append(dico2)
 
 dico3 = a_minus_b(list_dicts[2],list_dicts[0])
 dico3 = a_minus_b(list_dicts[2],list_dicts[1])
 list_dicts_worked.append(dico3)
 
-print(list_dicts_worked)
+print(list_dicts_worked)'''

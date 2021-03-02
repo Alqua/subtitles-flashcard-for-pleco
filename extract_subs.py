@@ -18,10 +18,10 @@ def filter(text):
     return text
 
 #remove a dictionnary to another one (remove b from a) based on key, a and b must be dictionnaries
+#a and b MUST be dictionnaries, value must be set on 1 for it to work properly
 def a_minus_b(a,b):
     a = {k:v for k,v in a.items() if k not in b or v != b[k]}
     return a
-
 
 
 
@@ -77,33 +77,55 @@ for i in lst:
     segmented_texts.append(y)
 
 #print(segmented_texts[0]) #testing
-print(segmented_texts[0], '/n /n /n /n NEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXT', segmented_texts[1])
+#print(segmented_texts[0], '/n /n /n /n NEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXT', segmented_texts[1])
 
-list_dicts=[]
 
-for i in segmented_texts:
+'''outfile = open("segmented_texts.txt", "w")
+outfile.write(str(segmented_texts[0]) + '\n'+str(segmented_texts[1]))
+outfile.close()
+
+outfile = open("segmented_texts.txt", "w")
+for row in segmented_texts:
+        outfile.write(str(row) + '\n')
+outfile.close()'''
+
+
+
+list_dicts_prep=[]
+
+for i[0] in segmented_texts:
     for a in i[0] :
-        #for s in a:
         di={}
-
-        di[a]= di.get(a,0)+1
-        list_dicts.append(di)
-
-#print(a_minus_b(list_dicts[1], list_dicts[0]))
-#print(list_dicts[0], '/n /n /n /n NEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXTNEXT', list_dicts[1])
-
-#outfile = open("1dict-full.txt", "w")
-#outfile.write( "\n".join(str(i) for i in list_dicts[0]))
-#outfile.close()
-
-#outfile = open("2dict-full.txt", "w")
-#outfile.write( "\n".join(str(i) for i in list_dicts[1]))
-#outfile.close()
-
-#outfile = open("3dict-full.txt", "w")
-#outfile.write( "\n".join(str(i) for i in list_dicts[2]))
-#outfile.close(
+        for s in a:
+            #print(s)
+            di[s]= di.get(s,0)+1
+        list_dicts_prep.append(di)
 
 
+list_dicts = []
+for a in list_dicts_prep:
+    a = dict.fromkeys(a, 1)
+    list_dicts.append(a)
+
+t = a_minus_b(list_dicts[1], list_dicts[0])
+
+print(t)
 
 #--end ckip part
+
+'''outfile = open("1dict-full.txt", "w")
+outfile.write( "\n".join(str(i) for i in list_dicts[0]))
+outfile.close()
+
+
+outfile = open("2dict-full.txt", "w")
+outfile.write( "\n".join(str(i) for i in list_dicts[1]))
+outfile.close()
+
+outfile = open("3dict-full.txt", "w")
+outfile.write( "\n".join(str(i) for i in list_dicts[2]))
+outfile.close()
+
+outfile = open("2minus1-dict.txt", "w")
+outfile.write( "\n".join(str(i) for i in t))
+outfile.close()'''
