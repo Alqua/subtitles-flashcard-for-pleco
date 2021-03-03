@@ -7,6 +7,7 @@ from ckiptagger import data_utils, construct_dictionary, WS, POS, NER
 #-cleaning (since ckiptagger can use delimiter, it can sometimes be useful not to clean everything below)
 def filter(text):
     text = re.sub("[A-Za-z0-9\!\=\？\%\[\]\,\（\）\>\<:&lt;\/#\. -----\_]", "", text)
+    text = re.sub("\n\n","",text)
     text = text.replace('image', '')
     text = text.replace('\xa0', '') # Delete nbsp
     # new
@@ -17,14 +18,7 @@ def filter(text):
     text = text.strip()
     return text
 
-#remove a dictionnary to another one (remove b from a) based on key, a and b must be dictionnaries
-#a and b MUST be dictionnaries, value must be set on 1 for it to work properly
-def a_minus_b(a,b):
-    a = {k:v for k,v in a.items() if k not in b or v != b[k]}
-    return a
-
-
-
+#--reading the subtitles files
 le_chemin_sub = 'subtitles'  # write the subtitles folder path
 
 filenames = os.listdir(le_chemin_sub)
@@ -60,6 +54,20 @@ ws = WS("./data")
 pos = POS("./data")
 ner = NER("./data")
 
+#voc of the whole serie
+word_sentence_list = ws(
+    sentence_list,
+    # sentence_segmentation = True, # To consider delimiters
+    segment_delimiter_set = {",", "。", ":", "?", "!", ";", "\n"}, # This is the default set of delimiters
+    # recommend_dictionary = dictionary1, # words in this dictionary are encouraged
+    # coerce_dictionary = dictionary2, # words in this dictionary are forced
+)
+
+pos_sentence_list = pos(word_sentence_list)
+
+entity_sentence_list = ner(word_sentence_list, pos_sentence_list)
+
+
 # create a list of a list of texts since ws accept list element and we want to keep the texts separate this time
 lst = []
 for i in sentence_list:
@@ -75,13 +83,39 @@ for i in lst:
 
 #--end ckip part
 
+#full serie dictionnary
+full_voc = {}
+for a in word_sentence_list:
+    for i in a:
+        full_voc[i]= full_voc.get(i,0)+1
 
+sorted_full = {}
+sorted_keys = sorted(full_voc, key=full_voc.get, reverse=True)  # [1, 3, 2]
 
+for w in sorted_keys:
+    sorted_full[w] = full_voc[w]
+print(sorted_full)
 
-#removing duplicates
+#retrieving names of places and
+perso = []
+lieux = []
+
+maliste = list(entity_sentence_list[0])
+for i in maliste:
+    if i[2] == 'PERSON':
+        perso.append(i[3])
+    elif i[2] == 'GPE':
+        lieux.append(i[3])
+
+perso = list(dict.fromkeys(perso))
+lieux = list(dict.fromkeys(lieux))
+
+print(perso, lieux)
+
+#removing duplicates from separate lists
 dict_in_list = []
-for i[0] in segmented_texts:
-    for a in i[0]:
+for i in segmented_texts:
+    for a in i:
         a = list(dict.fromkeys(a))
     dict_in_list.append(a)
 
@@ -108,11 +142,11 @@ for l in dict_in_list:
     list_voc = []
     for word in l:
         word = word.rstrip()
-        if removing is None and word not in hsk and word not in non_hsk:
+        if removing is None and word not in hsk and word not in non_hsk and word not in lieux and word not in perso:
             removing.append(word)
             list_voc.append(word)
             #print(word)
-        elif word not in removing and word not in hsk and word not in non_hsk:
+        elif word not in removing and word not in hsk and word not in non_hsk and word not in lieux and word not in perso:
             removing.append(word)
             list_voc.append(word)
             #print(word)
@@ -122,14 +156,29 @@ for l in dict_in_list:
 if not os.path.exists('results'):
     os.makedirs('results')
 
-#saving the files
+#--saving the files
+
+#saving full list with values
+f = open("results/sorted_full.txt","w")
+for key,value in sorted_full.items():
+    f.write("%s:%s\n" % (key,value))
+f.close()
+#saving places
+outfile = open("results/lieux_result.txt", "w")
+outfile.write( "\n".join(str(i) for i in lieux))
+outfile.close()
+#saving people's names
+outfile = open("results/perso_result.txt", "w")
+outfile.write( "\n".join(str(i) for i in perso))
+outfile.close()
+#saving voc per episode
 for count, item in enumerate(list_of_list, 1):
     # every file will get the the index as name
     with open(f'results/{count}.txt', 'w') as f:
         f.write("\n".join(str(i) for i in item))
 
 #WARNING for order of episode in subtitles folder (again)
-print('Please, check that the order of the episodes is correct, if not, rename them with the correct number in front') 
+print('Please, check that the order of the episodes is correct, if not, rename them with the correct number in front')
 for filename in sorted(os.listdir(le_chemin_sub)):  # for all file names in folder subtitles in order
     #ignore hidden files
     if filename[0] != '.':
