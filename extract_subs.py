@@ -18,6 +18,10 @@ def filter(text):
     text = text.strip()
     return text
 
+def nettoyage(word):
+    word = re.sub("\n","",word)
+    return word
+
 #--reading the subtitles files
 le_chemin_sub = 'subtitles'  # write the subtitles folder path
 
@@ -113,11 +117,19 @@ lieux = list(dict.fromkeys(lieux))
 print(perso, lieux)
 
 #removing duplicates from separate lists
-dict_in_list = []
+dict_in = []
 for i in segmented_texts:
     for a in i:
         a = list(dict.fromkeys(a))
-    dict_in_list.append(a)
+    dict_in.append(a)
+
+dict_in_list = []
+for i in dict_in:
+    lst = []
+    for word in i:
+        word = nettoyage(word)
+        lst.append(word)
+    dict_in_list.append(lst)
 
 
 #importing hsk words to remove
@@ -133,6 +145,7 @@ non_hsk=[]
 for line in fz:
     line = line.rstrip()
     non_hsk.append(line)
+non_hsk.append('\n')
 
 #organizing the lists of vocabulary
 list_of_list = [] #the container of the vocabulary list
@@ -152,6 +165,18 @@ for l in dict_in_list:
             #print(word)
     list_of_list.append(list_voc)
 
+#extract common voc of all episodes
+
+common = set(dict_in_list[0]).intersection(*dict_in_list[1:])
+
+common_without = []
+
+for word in common:
+    if word not in hsk and word not in non_hsk and word not in lieux and word not in perso:
+        common_without.append(word)
+
+print(common_without)
+
 #create folder for results
 if not os.path.exists('results'):
     os.makedirs('results')
@@ -163,6 +188,14 @@ f = open("results/sorted_full.txt","w")
 for key,value in sorted_full.items():
     f.write("%s:%s\n" % (key,value))
 f.close()
+#saving common voc
+outfile = open("results/common_voc.txt", "w")
+outfile.write( "\n".join(str(i) for i in common))
+outfile.close()
+#saving common without hsk,stopwords, character, places
+outfile = open("results/common_without.txt", "w")
+outfile.write( "\n".join(str(i) for i in common_without))
+outfile.close()
 #saving places
 outfile = open("results/lieux_result.txt", "w")
 outfile.write( "\n".join(str(i) for i in lieux))
